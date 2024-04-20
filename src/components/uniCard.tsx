@@ -70,7 +70,7 @@ const UniCard: React.FC = () => {
             e.preventDefault();
             handleSearch();
           }}
-          className="flex flex-col w-full p-2 space-y-4 items-center" // Centering items
+          className="flex flex-col w-full p-2 space-y-4 items-center" 
         >
           <Input
             id="uniname"
@@ -80,7 +80,7 @@ const UniCard: React.FC = () => {
             onChange={(e) => {
               setUni(e.target.value);
             }}
-            className="border-2 border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring focus:border-blue-500 hover:border-blue-500"
+            className=" border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring focus:border-blue-500 hover:border-blue-500"
           />
           <Button
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300"
@@ -94,8 +94,13 @@ const UniCard: React.FC = () => {
       </CardHeader>
       <Divider />
       {data ? (
-        <CardBody className="text-center">
-          <div className="mb-8">
+        <CardBody className="text-center relative flex flex-col">
+          <img
+            src={getLogo(uni)} // logo based on university
+            alt={`${data.name} logo`}
+            className="w-50 h-30 mx-auto mt-2"
+          />
+          <div className="mb-auto">
             <h1 className="text-4xl font-bold">{data.name}</h1>
             <p className="text-2xl font-bold">Ranking: {data.ranking}</p>
           </div>
@@ -118,6 +123,7 @@ const UniCard: React.FC = () => {
               Contact Email: <a href={`mailto:${data.contactEmail}`} className="text-blue-500 hover:text-blue-700">{data.contactEmail}</a>
             </p>
           </div>
+
         </CardBody>
       ) : (
         <CardBody>
@@ -143,5 +149,6 @@ const UniCard: React.FC = () => {
 };
 
 export default UniCard;
+
 
 
