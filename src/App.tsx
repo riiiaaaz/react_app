@@ -1,6 +1,6 @@
 import "./App.css";
 import NavBar from "./components/NavBar";
-import UniCard from "./components/uniCard"; // Corrected the component name to start with an uppercase letter
+import UniCard from "./components/uniCard"; 
 
 const App = () => {
   return (
