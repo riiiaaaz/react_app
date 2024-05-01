@@ -1,20 +1,13 @@
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  Divider,
-  Input,
-  Button,
-} from "@nextui-org/react";
+import React from "react";
+import { Card, CardHeader, CardBody, CardFooter, Divider, Input, Button } from "@nextui-org/react";
 import { useState } from "react";
+import { getUniversityData } from "../api/actions";
 import uelL from "/workspaces/react_app/src/assets/uel.png";
 import cambridgeL from "/workspaces/react_app/src/assets/cambridge.png";
 import stanfordL from "/workspaces/react_app/src/assets/stanford.png";
 import mitL from "/workspaces/react_app/src/assets/mit.png";
-import oxfordL from "/workspaces/react_app/src/assets/osford.png";
+import oxfordL from "/workspaces/react_app/src/assets/oxford.png";
 import harvardL from "/workspaces/react_app/src/assets/harvard.png";
-import { getUniversityData } from "../api/actions";
 
 const UniCard: React.FC = () => {
   const [data, setData] = useState<UniversityData>();
@@ -23,28 +16,24 @@ const UniCard: React.FC = () => {
   const [error, setError] = useState("");
 
   const handleSearch = () => {
-    console.log("Fetching University Data...");
-    console.log(uni);
     setLoadingState(true);
     getUniversityData(uni)
       .then((res) => {
         setError("");
         if (res) {
-          console.log(res);
           setData(res);
-          setLoadingState(false);
         }
       })
       .catch((error) => {
-        console.error(error);
-        setLoadingState(false);
-        setData(undefined);
         setError(error);
+      })
+      .finally(() => {
+        setLoadingState(false);
       });
   };
 
   const getLogo = (uni: string) => {
-    switch (uni) {
+    switch (uni.toLowerCase()) {
       case "uel":
         return uelL;
       case "oxford":
@@ -70,7 +59,7 @@ const UniCard: React.FC = () => {
             e.preventDefault();
             handleSearch();
           }}
-          className="flex flex-col w-full p-2 space-y-4 items-center" 
+          className="flex flex-col w-full p-2 space-y-4 items-center"
         >
           <Input
             id="uniname"
@@ -80,7 +69,6 @@ const UniCard: React.FC = () => {
             onChange={(e) => {
               setUni(e.target.value);
             }}
-            className=" border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring focus:border-blue-500 hover:border-blue-500"
           />
           <Button
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-md transition duration-300"
@@ -93,55 +81,54 @@ const UniCard: React.FC = () => {
         </form>
       </CardHeader>
       <Divider />
-      {data ? (
-        <CardBody className="text-center relative flex flex-col">
-          <img
-            src={getLogo(uni)} // logo based on university
-            alt={`${data.name} logo`}
-            className="w-50 h-30 mx-auto mt-2"
-          />
-          <div className="mb-auto">
-            <h1 className="text-4xl font-bold">{data.name}</h1>
-            <p className="text-2xl font-bold">Ranking: {data.ranking}</p>
-          </div>
-          <div className="mb-4">
-            <p className="text-lg">
-              Total Students: {data.totalStudents}
-            </p>
-            <p className="text-lg">Courses Taught: {data.coursesTaught}</p>
-            <p className="text-lg">Total Lecturers: {data.totalLecturers}</p>
-          </div>
-          <div className="mb-4">
-            <p className="text-lg">Location: {data.location}</p>
-            <p className="text-lg">Foundation Year: {data.foundationYear}</p>
-          </div>
-          <div className="mb-4">
-            <p className="text-lg">
-              Website: <a href={data.website} className="text-blue-500 hover:text-blue-700">{data.website}</a>
-            </p>
-            <p className="text-lg">
-              Contact Email: <a href={`mailto:${data.contactEmail}`} className="text-blue-500 hover:text-blue-700">{data.contactEmail}</a>
-            </p>
-          </div>
-
-        </CardBody>
-      ) : (
-        <CardBody>
+      <CardBody className="max-h-80 overflow-y-auto">
+        {data ? (
+          <>
+            <img
+              src={getLogo(uni)} // logo based on university
+              alt={`${data.name} logo`}
+              className="w-50 h-30 mx-auto mt-2"
+            />
+            <div className="mb-auto">
+              <h1 className="text-4xl font-bold">{data.name}</h1>
+              <p className="text-2xl font-bold">Ranking: {data.ranking}</p>
+            </div>
+            <div className="mb-4">
+              <p className="text-lg">Total Students: {data.totalStudents}</p>
+              <p className="text-lg">Courses Taught: {data.coursesTaught}</p>
+              <p className="text-lg">Total Lecturers: {data.totalLecturers}</p>
+            </div>
+            <div className="mb-4">
+              <p className="text-lg">Location: {data.location}</p>
+              <p className="text-lg">Foundation Year: {data.foundationYear}</p>
+            </div>
+            <div className="mb-4">
+              <p className="text-lg">
+                Website:{" "}
+                <a href={data.website} className="text-blue-500 hover:text-blue-700">
+                  {data.website}
+                </a>
+              </p>
+              <p className="text-lg">
+                Contact Email:{" "}
+                <a href={`mailto:${data.contactEmail}`} className="text-blue-500 hover:text-blue-700">
+                  {data.contactEmail}
+                </a>
+              </p>
+            </div>
+          </>
+        ) : (
           <div className="flex flex-col items-center">
             <p className="text-xl font-bold">Please enter a university name</p>
           </div>
-        </CardBody>
-      )}
+        )}
+      </CardBody>
       <Divider />
       <CardFooter>
         <div className="flex flex-col items-left">
           {error && <p className="text-xs text-red-600 ">{error}</p>}
-          {data && (
-            <p className="text-xs text-gray-600 ">Last update successful.</p>
-          )}
-          {!data && (
-            <p className="text-xs text-gray-800 ">Waiting for input...</p>
-          )}
+          {data && <p className="text-xs text-gray-600 ">Last update successful.</p>}
+          {!data && <p className="text-xs text-gray-800 ">Waiting for input...</p>}
         </div>
       </CardFooter>
     </Card>
@@ -149,6 +136,7 @@ const UniCard: React.FC = () => {
 };
 
 export default UniCard;
+
 
 
 
